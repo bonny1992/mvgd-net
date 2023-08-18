@@ -21,6 +21,7 @@ jobs:
       - name: Build and Publish
         working-directory: ./mvgd-net
         run: |
+          dotnet add package Spectre.Console -v 0.47.0
           dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:AssemblyName=${{ github.repository }}_${{ github.ref }}_linux-x64 -o ./publish/
           dotnet publish -c Release -r linux-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:AssemblyName=${{ github.repository }}_${{ github.ref }}_linux-arm64 -o ./publish/
           dotnet publish -c Release -r osx-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:AssemblyName=${{ github.repository }}_${{ github.ref }}_osx-x64 -o ./publish/
