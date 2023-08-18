@@ -18,7 +18,7 @@ steps:
       api_key:
         from_secret: GITHUB_TOKEN
       files:
-        - ./publish/${DRONE_REPO_NAME}_*
+        - ./mvgd-net/publish/${DRONE_REPO_NAME}_*
       checksum:
         - sha256
     when:

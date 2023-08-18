@@ -1,13 +1,16 @@
-name: Build and Add Assets to Release
+name: Build and Release
 
 on:
+  push:
+    branches:
+      - main
   release:
     types:
       - created
 
 jobs:
-  build_and_add_assets:
-    name: Build and Add Assets
+  build:
+    name: Build and Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -19,40 +22,18 @@ jobs:
         with:
           dotnet-version: '6.0.x'
 
-      - name: Build
+      - name: Build and Publish
         run: |
           cd mvgd-net  # Navigate to the project directory
           dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-x64
-          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-x64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_linux-x64
-          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-x64
           dotnet publish -c Release -r linux-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-arm64
-          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-arm64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_linux-arm64
-          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-arm64
           dotnet publish -c Release -r osx-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-x64
-          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-x64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_osx-x64
-          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-x64
           dotnet publish -c Release -r osx-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-arm64
-          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-arm64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_osx-arm64
-          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-arm64
           dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_win-x64
-          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_win-x64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_win-x64.exe
-          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_win-x64
 
-      - name: Get Release ID
-        id: get_release_id
-        run: |
-          release_id=$(curl -s -X GET -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref }} | jq '.id')
-          echo "RELEASE_ID=$release_id" >> $GITHUB_ENV
-
-      - name: Add Assets to Release
-        run: |
-          ASSET_PATH="./mvgd-net/publish"  # Update the path accordingly
-
-          for file in $ASSET_PATH/*; do
-            curl \
-              -X POST \
-              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Content-Type: application/octet-stream" \
-              --data-binary "@$file" \
-              "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets?name=$(basename $file)"
-          done
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./publish/**
+          token: ${{ secrets.GITHUB_TOKEN }}
