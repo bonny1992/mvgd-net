@@ -5,7 +5,10 @@
         <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>mvgd_net</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
+        <PublishSingleFile>true</PublishSingleFile>
         <Nullable>enable</Nullable>
+        <RuntimeIdentifier>linux-arm64;linux-x64;osx-arm64;osx-x64</RuntimeIdentifier>
+        <PublishTrimmed>true</PublishTrimmed>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
