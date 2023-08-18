@@ -36,7 +36,7 @@ class Program
             if (!string.IsNullOrEmpty(selectedFile))
             {
                 char firstLetter = char.ToUpper(selectedFile[0]);
-                string destinationFolder = Path.Combine(@"D:\git\mvgd-net\mvgd-net\test", $"{firstLetter}");
+                string destinationFolder = Path.Combine(@"/mnt/gdmerged/Other games", $"{firstLetter}");
 
                 var subDirectories = Directory.GetDirectories(destinationFolder);
 
@@ -85,11 +85,44 @@ class Program
             }
         }
 
+        AnsiConsole.Status()
+            .Start("Moving...", ctx =>
+            {
+                foreach (var association in fileToFolderAssociations)
+                {
+                    string sourceFilePath = association.file;
+                    string destinationFolderPath = association.folder;
+                    string destinationFilePath = Path.Combine(destinationFolderPath, Path.GetFileName(sourceFilePath));
+
+                    if (!Directory.Exists(destinationFolderPath))
+                    {
+                        Directory.CreateDirectory(destinationFolderPath);
+                    }
+
+                    if (File.Exists(destinationFilePath))
+                    {
+                        if (AnsiConsole.Confirm($"The file '{Path.GetFileName(destinationFilePath)}' already exists. Do you want to overwrite it?"))
+                        {
+                            File.Delete(destinationFilePath);
+                        }
+                        else
+                        {
+                            AnsiConsole.MarkupLine($"Skipped '{Path.GetFileName(sourceFilePath)}'");
+                            continue; // Skip this file and move to the next iteration
+                        }
+                    }
+
+                    AnsiConsole.MarkupLine($"Moving '{Path.GetFileName(sourceFilePath)}' to '{destinationFolderPath}'");
+                    File.Move(sourceFilePath, destinationFilePath);
+                }
+
+                AnsiConsole.MarkupLine("Ended moving the files.");
+            });
         // After selecting all folders, move the files based on the associations
-        foreach (var association in fileToFolderAssociations)
+        /*foreach (var association in fileToFolderAssociations)
         {
             MoveFile(association.file, association.folder);
-        }
+        }*/
     }
 
     static bool IsValidFolderName(string folderName)
@@ -98,27 +131,27 @@ class Program
         return !folderName.Any(c => invalidChars.Contains(c));
     }
 
-    static void MoveFile(string sourceFilePath, string destinationFolderPath)
-    {
-        AnsiConsole.Progress()
-            .AutoRefresh(false)
-            .AutoClear(false)
-            .HideCompleted(false)
-            .Columns(new ProgressColumn[] 
-            {
-                new TaskDescriptionColumn(),
-                new ProgressBarColumn(),
-                new PercentageColumn(),
-                new RemainingTimeColumn(),
-                new SpinnerColumn(),
-            })
-            .Start(ctx =>
-            {
-                var task = ctx.AddTask($"Moving '{Path.GetFileName(sourceFilePath)}' to '{destinationFolderPath}'");
+    //static void MoveFile(string sourceFilePath, string destinationFolderPath)
+    //{
+     //   AnsiConsole.Progress()
+       //     .AutoRefresh(false)
+         //   .AutoClear(false)
+           // .HideCompleted(false)
+            //.Columns(new ProgressColumn[] 
+            //{
+              //  new TaskDescriptionColumn(),
+               // new ProgressBarColumn(),
+                //new PercentageColumn(),
+                //new RemainingTimeColumn(),
+                //new SpinnerColumn(),
+            //})
+            //.Start(ctx =>
+            //{
+              //  var task = ctx.AddTask($"Moving '{Path.GetFileName(sourceFilePath)}' to '{destinationFolderPath}'");
 
                 // Perform the file move and update the progress
-                File.Move(sourceFilePath, Path.Combine(destinationFolderPath, Path.GetFileName(sourceFilePath)));
-                task.Increment(100);
-            });
-    }
+                //File.Move(sourceFilePath, Path.Combine(destinationFolderPath, Path.GetFileName(sourceFilePath)));
+                //task.Increment(100);
+            //});
+    //}*/
 }
