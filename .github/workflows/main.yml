@@ -26,10 +26,20 @@ jobs:
         run: |
           cd mvgd-net  # Navigate to the project directory
           dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-x64
+          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-x64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_linux-x64
+          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-x64
           dotnet publish -c Release -r linux-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-arm64
+          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-arm64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_linux-arm64
+          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-arm64
           dotnet publish -c Release -r osx-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-x64
+          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-x64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_osx-x64
+          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-x64
           dotnet publish -c Release -r osx-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-arm64
+          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-arm64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_osx-arm64
+          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-arm64
           dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_win-x64
+          mv ./publish/${{ github.repository }}_${{ github.ref_slug }}_win-x64/mvgd-net* ./publish/mvgd-net_${{ github.ref_slug }}_win-x64.exe
+          rm -rf ./publish/${{ github.repository }}_${{ github.ref_slug }}_win-x64
 
       - name: Create Tag
         run: git tag v${{ github.run_number }}
