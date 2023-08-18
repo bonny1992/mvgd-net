@@ -6,6 +6,7 @@ steps:
   - name: build
     image: mcr.microsoft.com/dotnet/sdk:6.0
     commands:
+      - cd mvgd-net  # Entriamo nella cartella del progetto
       - dotnet publish -c Release -r linux-x64 -o ./publish${DRONE_REPO_NAME}_${DRONE_TAG}_linux-x64
       - dotnet publish -c Release -r linux-arm64 -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_linux-arm64
       - dotnet publish -c Release -r osx-x64 -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_osx-x64
