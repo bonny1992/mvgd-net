@@ -24,12 +24,13 @@ jobs:
 
       - name: Build and Publish
         run: |
-          cd mvgd-net  # Navigate to the project directory
-          dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-x64
-          dotnet publish -c Release -r linux-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_linux-arm64
-          dotnet publish -c Release -r osx-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-x64
-          dotnet publish -c Release -r osx-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_osx-arm64
-          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${{ github.repository }}_${{ github.ref_slug }}_win-x64
+          cd mvgd-net  # Entriamo nella cartella del progetto
+          dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:AssemblyName=${{ github.repository }}_${{ github.ref_slug }}_linux-x64 -o ./publish/
+          dotnet publish -c Release -r linux-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:AssemblyName=${{ github.repository }}_${{ github.ref_slug }}_linux-arm64 -o ./publish/
+          dotnet publish -c Release -r osx-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:AssemblyName=${{ github.repository }}_${{ github.ref_slug }}_osx-x64 -o ./publish/
+          dotnet publish -c Release -r osx-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:AssemblyName=${{ github.repository }}_${{ github.ref_slug }}_osx-arm64 -o ./publish/
+          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true /p:AssemblyName=${{ github.repository }}_${{ github.ref_slug }}_win-x64 -o ./publish/
+          rm -rf ./publish/*.pdb
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
