@@ -1,5 +1,4 @@
 kind: pipeline
-type: exec
 name: default
 
 steps:
@@ -12,27 +11,20 @@ steps:
       - dotnet publish -c Release -r osx-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_osx-x64
       - dotnet publish -c Release -r osx-arm64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_osx-arm64
       - dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:PublishTrimmed=true -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_win-x64
-    volumes:
-      - name: cache
-        path: /root/.nuget/packages
-      - name: build-cache
-        path: /root/.local/share/NuGet/Cache
 
-  - name: create_release
+  - name: github release
     image: plugins/github-release
     settings:
       api_key:
         from_secret: GITHUB_TOKEN
       files:
-        - publish/**
-      draft: false
-      prerelease: false
+        - ./publish/${DRONE_REPO_NAME}_*
+      checksum:
+        - sha256
     when:
       event:
         - tag
 
-volumes:
-  - name: cache
-    temp: {}
-  - name: build-cache
-    temp: {}
+trigger:
+  event:
+    - tag
