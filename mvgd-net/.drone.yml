@@ -1,0 +1,37 @@
+kind: pipeline
+type: exec
+name: default
+
+steps:
+  - name: build
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    commands:
+      - dotnet publish -c Release -r linux-x64 -o ./publish${DRONE_REPO_NAME}_${DRONE_TAG}_linux-x64
+      - dotnet publish -c Release -r linux-arm64 -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_linux-arm64
+      - dotnet publish -c Release -r osx-x64 -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_osx-x64
+      - dotnet publish -c Release -r osx-arm64 -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_osx-arm64
+      - dotnet publish -c Release -r win-x64 -o ./publish/${DRONE_REPO_NAME}_${DRONE_TAG}_win-x64
+    volumes:
+      - name: cache
+        path: /root/.nuget/packages
+      - name: build-cache
+        path: /root/.local/share/NuGet/Cache
+
+  - name: create_release
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: GITHUB_TOKEN
+      files:
+        - publish/**
+      draft: false
+      prerelease: false
+    when:
+      event:
+        - tag
+
+volumes:
+  - name: cache
+    temp: {}
+  - name: build-cache
+    temp: {}
