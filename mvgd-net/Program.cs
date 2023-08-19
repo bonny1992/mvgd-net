@@ -21,7 +21,7 @@ class Program
 
         var fileSelectionPrompt = new MultiSelectionPrompt<string>()
             .Title("Select files:")
-            .PageSize(10)
+            .PageSize(20)
             .MoreChoicesText("[grey](Move up and down to reveal more files)[/]")
             .InstructionsText(
                 "[grey](Press [blue]<space>[/] to toggle a file, " + 
@@ -84,7 +84,6 @@ class Program
                 }
             }
         }
-
         AnsiConsole.Status()
             .Start("Moving...", ctx =>
             {
