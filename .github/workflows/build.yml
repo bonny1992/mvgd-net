@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout Repository
+      - name: Checkout Repository for real
         uses: actions/checkout@v2
 
       - name: Set up .NET Core
