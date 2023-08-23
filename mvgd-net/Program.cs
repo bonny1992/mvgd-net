@@ -37,7 +37,12 @@ class Program
             {
                 char firstLetter = char.ToUpper(selectedFile[0]);
                 string destinationFolder = Path.Combine(@"/mnt/gdmerged/Other games", $"{firstLetter}");
-
+                
+                if (!Directory.Exists(destinationFolder))
+                {
+                    Directory.CreateDirectory(destinationFolder);
+                }
+                
                 var subDirectories = Directory.GetDirectories(destinationFolder);
 
                 var folderChoices = subDirectories.Select(subDir => Path.GetFileName(subDir)).ToList();
