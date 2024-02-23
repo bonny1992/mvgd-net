@@ -36,7 +36,7 @@ class Program
             if (!string.IsNullOrEmpty(selectedFile))
             {
                 char firstLetter = char.ToUpper(selectedFile[0]);
-                string destinationFolder = Path.Combine(@"/mnt/gdmerged/Other games", $"{firstLetter}");
+                string destinationFolder = Path.Combine(@"/mnt/addons/merged-remotes/dropbox-crypt/Home/Other games", $"{firstLetter}");
                 
                 if (!Directory.Exists(destinationFolder))
                 {
