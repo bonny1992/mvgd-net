@@ -21,7 +21,7 @@ class Program
 
         var fileSelectionPrompt = new MultiSelectionPrompt<string>()
             .Title("Select files:")
-            .PageSize(20)
+            .PageSize(30)
             .MoreChoicesText("[grey](Move up and down to reveal more files)[/]")
             .InstructionsText(
                 "[grey](Press [blue]<space>[/] to toggle a file, " + 
@@ -50,7 +50,7 @@ class Program
 
                 var folderSelectionPrompt = new SelectionPrompt<string>()
                     .Title($"Select a subdirectory for '{selectedFile}' or create a new one:")
-                    .PageSize(10)
+                    .PageSize(30)
                     .MoreChoicesText("[grey](Move up and down to reveal more subdirectories)[/]")
                     .AddChoices(folderChoices);
 
