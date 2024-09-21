@@ -38,7 +38,7 @@ class Program
             {
                 char firstLetter = char.ToUpper(selectedFile[0]);
                 string destinationFolder = Path.Combine(@"/mnt/addons/merged-remotes/td-personal-bonny-home-union-crypt/Home/Other games", $"{firstLetter}");
-                AnsiConsole.MarkupLine($"[red] Folder: '{destinationFolder}'.");
+                AnsiConsole.MarkupLine($"[red] Folder: '{destinationFolder}'.[/]");
                 
                 if (!Directory.Exists(destinationFolder))
                 {
@@ -51,7 +51,7 @@ class Program
                 folderChoices.Add("[green]Create New Folder[/]");
 
                 var folderSelectionPrompt = new SelectionPrompt<string>()
-                    .Title($"Select a subdirectory for '{selectedFile}' or create a new one:")
+                    .Title($"[red] Folder: '{destinationFolder}'.[/] Select a subdirectory for '{selectedFile}' or create a new one:")
                     .PageSize(30)
                     .MoreChoicesText("[grey](Move up and down to reveal more subdirectories)[/]")
                     .AddChoices(folderChoices);
