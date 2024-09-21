@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Spectre.Console;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 class Program
 {
@@ -37,6 +38,7 @@ class Program
             {
                 char firstLetter = char.ToUpper(selectedFile[0]);
                 string destinationFolder = Path.Combine(@"/mnt/addons/merged-remotes/td-personal-bonny-home-union-crypt/Home/Other games", $"{firstLetter}");
+                AnsiConsole.MarkupLine($"[red] Folder: '{destinationFolder}'.");
                 
                 if (!Directory.Exists(destinationFolder))
                 {
