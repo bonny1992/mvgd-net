@@ -100,7 +100,7 @@ class Program
                     }
                     else
                     {
-                        if (PromptForConfirmation($"Create new folder '{newFolderName}'?"))
+                        if (AnsiConsole.Confirm($"Create new folder '{newFolderName}'?"))
                         {
                             string newFolderPath = Path.Combine(folderPath, newFolderName);
                             Directory.CreateDirectory(newFolderPath);
@@ -112,7 +112,7 @@ class Program
                 }
                 else
                 {
-                    if (PromptForConfirmation($"Selected subdirectory '{selectedFolder}', are you sure?"))
+                    if (AnsiConsole.Confirm($"Selected subdirectory '{selectedFolder}', are you sure?"))
                     {
                         AnsiConsole.WriteLine($"Proceeding with selected subdirectory: {selectedFolder}");
                         string selectedFolderPath = Path.Combine(folderPath, selectedFolder);
@@ -137,7 +137,7 @@ class Program
 
             if (File.Exists(destinationFilePath))
             {
-                if (PromptForConfirmation($"The file '{Path.GetFileName(destinationFilePath)}' already exists. Do you want to overwrite it?"))
+                if (AnsiConsole.Confirm($"The file '{Path.GetFileName(destinationFilePath)}' already exists. Do you want to overwrite it?"))
                 {
                     File.Delete(destinationFilePath);
                 }
@@ -155,22 +155,9 @@ class Program
         AnsiConsole.MarkupLine("[green]File move operation completed.[/]");
     }
 
-    // Funzione per validare il nome della cartella
     static bool IsValidFolderName(string folderName)
     {
         char[] invalidChars = Path.GetInvalidFileNameChars();
         return !folderName.Any(c => invalidChars.Contains(c));
-    }
-
-    // Funzione per conferma tramite selezione "Yes" o "No"
-    static bool PromptForConfirmation(string message)
-    {
-        var confirm = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title(message)
-                .AddChoices(new[] { "Yes", "No" })
-                .DefaultValue("Yes"));
-
-        return confirm == "Yes";
     }
 }
