@@ -168,8 +168,7 @@ class Program
         var confirm = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title(message)
-                .AddChoices(new[] { "Yes", "No" })
-                .DefaultValue("Yes"));
+                .AddChoices(new[] { "Yes", "No" })); // Rimuoviamo il DefaultValue
 
         return confirm == "Yes";
     }
