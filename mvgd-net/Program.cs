@@ -4,11 +4,52 @@ using System.Linq;
 using Spectre.Console;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Tomlyn; // Libreria per gestire i file TOML
+using Tomlyn.Model; // Modello di dati per la lettura e scrittura TOML
 
 class Program
 {
     static void Main(string[] args)
     {
+        // Path del file di configurazione
+        string configFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config/mvgd/config.toml");
+
+        // Se il file di configurazione non esiste, crealo con valori di default
+        if (!File.Exists(configFilePath))
+        {
+            AnsiConsole.MarkupLine("[yellow]Configuration file not found. Creating a default one...[/]");
+
+            // Creazione della directory se non esiste
+            string configDirectory = Path.GetDirectoryName(configFilePath);
+            if (!Directory.Exists(configDirectory))
+            {
+                Directory.CreateDirectory(configDirectory);
+            }
+
+            // Scrittura di un file TOML di default
+            var defaultConfig = new TomlTable
+            {
+                ["destinationDirectory"] = "/mnt/addons/merged-remotes/td-personal-bonny-home-union-crypt/Home/Other games"
+            };
+
+            File.WriteAllText(configFilePath, Toml.FromModel(defaultConfig));
+        }
+
+        // Lettura del file di configurazione
+        string tomlContent = File.ReadAllText(configFilePath);
+        var config = Toml.ToModel(tomlContent) as TomlTable;
+        
+        // Estrai il valore della chiave "destinationDirectory"
+        string destinationDirectory = config["destinationDirectory"] as string;
+
+        if (string.IsNullOrEmpty(destinationDirectory))
+        {
+            AnsiConsole.MarkupLine("[red]Invalid destination directory in configuration file.[/]");
+            return;
+        }
+
+        // Mostra la directory di destinazione
+        AnsiConsole.MarkupLine($"Destination directory: [green]{destinationDirectory}[/]");
         string currentDirectory = Directory.GetCurrentDirectory();
         string[] files = Directory.GetFiles(currentDirectory);
 
@@ -37,8 +78,8 @@ class Program
             if (!string.IsNullOrEmpty(selectedFile))
             {
                 char firstLetter = char.ToUpper(selectedFile[0]);
-                string destinationFolder = Path.Combine(@"/mnt/addons/merged-remotes/td-personal-bonny-home-union-crypt/Home/Other games", $"{firstLetter}");
-                AnsiConsole.MarkupLine($"[red] Folder: '{destinationFolder}'.[/]");
+                string destinationFolder = Path.Combine(destinationDirectory, $"{firstLetter}");
+                AnsiConsole.MarkupLine($"[green] Found folder: '{destinationFolder}'.[/]");
                 
                 if (!Directory.Exists(destinationFolder))
                 {
@@ -51,7 +92,7 @@ class Program
                 folderChoices.Add("[green]Create New Folder[/]");
 
                 var folderSelectionPrompt = new SelectionPrompt<string>()
-                    .Title($"[red] Folder: '{destinationFolder}'.[/] Select a subdirectory for '{selectedFile}' or create a new one:")
+                    .Title($"Select a subdirectory for '{selectedFile}' or create a new one:")
                     .PageSize(30)
                     .MoreChoicesText("[grey](Move up and down to reveal more subdirectories)[/]")
                     .AddChoices(folderChoices);
